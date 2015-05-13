@@ -1,0 +1,5 @@
+[web]
+178.62.125.116
+
+[vm]
+172.16.3.10     ansible_ssh_user=ttm.markk      ansible_connection=ssh  ansible_ssh_private_key_file=/Users/mark/.ssh/id_rsa
