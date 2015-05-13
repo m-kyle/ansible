@@ -1,0 +1,71 @@
+---
+- hosts: web
+  remote_user: root
+
+  vars:
+  # Useful variables to change
+    gitlab_version: 7.10.4
+    downloads: /root/ansible-downloads
+
+  tasks:
+  - name: Clone Gitlab Repository
+  # Clones specific GitLab version from GitHub into a downloads directory
+    git:
+      repo: https://github.com/gitlabhq/gitlabhq.git
+      dest: "{{ downloads }}/gitlab"
+      clone: yes
+      version: v{{ gitlab_version }}
+    tags:
+      - clone
+
+  - name: Build Docker Data Image
+  # Builds Docker Data Image from downloaded repository
+    docker_image:
+      path: "{{ downloads }}/gitlab/docker/data/"
+      name: gitlab-data
+      state: present
+    tags:
+      - build
+
+  - name: Build Docker App Image
+  # Builds Docker App Image from downloaded repository
+    docker_image:
+      path: "{{ downloads }}/gitlab/docker"
+      name: gitlab
+      state: present
+      tag: "{{ gitlab_version }}"
+    tags:
+      - build
+
+  - name: Run Docker Data Container
+  # Runs Docker Data Container
+    docker:
+      name: gitlab-data
+      image: gitlab-data
+      command: /bin/true
+      state: present
+    tags:
+      - run
+
+  - name: Run Docker App Container
+  # Runs Docker App Container
+    docker:
+      name: gitlab_{{ gitlab_version }}
+      image: gitlab:{{ gitlab_version }}
+      state: restarted
+      detach: true
+      ports:
+      - 2222:22
+      - 8080:80
+      volumes_from:
+      - gitlab_data
+    tags:
+      - run
+
+  - name: Remove Temporary Files
+  # Removes the downloads directory
+    file:
+      path: "{{ downloads }}"
+      state: absent
+    tags:
+      - cleanup
