@@ -56,8 +56,8 @@
       detach: true
       restart_policy: always
       ports:
-      - 2222:22
-      - 8888:80
+      - 0.0.0.0:2222:22
+      - 0.0.0.0:8888:80
       volumes_from:
       - gitlab_data
     tags:
