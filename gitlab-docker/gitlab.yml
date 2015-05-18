@@ -52,7 +52,7 @@
     docker:
       name: gitlab_{{ gitlab_version }}
       image: gitlab:{{ gitlab_version }}
-      state: restarted
+      state: reloaded
       detach: true
       restart_policy: always
       ports:
