@@ -1,0 +1,48 @@
+---
+- hosts: web
+  remote_user: root
+
+  vars:
+  # Useful variables to change
+    gitlab_version: 7.10.4
+
+  tasks:
+  - name: Download GitLab Data image
+  # Downloads GitLab Data Image from the Docker Hub
+    docker:
+      name: gitlab-data
+      image: sytse/gitlab-data
+      state: present
+
+  - name: Download GitLab App Image
+  # Downloads GitLab App Image from the Docker Hub
+    docker:
+      name: gitlab-app
+      image: sytse/gitlab-app:{{ gitlab_version }}
+      state: present
+
+  - name: Run Docker Data Container
+  # Runs Docker Data Container
+    docker:
+      name: gitlab-data
+      image: gitlab-data
+      command: /bin/true
+      state: present
+    tags:
+      - run
+
+  - name: Run Docker App Container
+  # Runs Docker App Container
+    docker:
+      name: gitlab_{{ gitlab_version }}
+      image: gitlab:{{ gitlab_version }}
+      state: reloaded
+      detach: true
+      restart_policy: always
+      ports:
+      - 0.0.0.0:2222:22
+      - 0.0.0.0:8888:80
+      volumes_from:
+      - gitlab_data
+    tags:
+      - run
