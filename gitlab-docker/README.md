@@ -5,7 +5,7 @@ There are two Ansible Playbooks one for building a Docker image from the GitLab 
   - build-image
   - run-from-docker-hub
 
-# Building GitLab from source and deploying to Docker using Ansible
+## Building GitLab from source and deploying to Docker using Ansible
 
 Edit the `hosts` inventory file to point to the server(s) you want to deploy to.
 
