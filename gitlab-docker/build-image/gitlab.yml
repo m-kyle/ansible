@@ -4,7 +4,7 @@
 
   vars:
   # Useful variables to change
-    gitlab_version: 7.10.4
+    gitlab_version: 7.10.0
     downloads: /root/ansible-downloads
 
   tasks:
